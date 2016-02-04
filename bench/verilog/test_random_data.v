@@ -21,7 +21,7 @@
 //`define VCD_DUMP_ENABLE     1
 
 // the length of the code source
-`define CODE_LEN            1280
+`define CODE_LEN            1000
 
 // data generation seed - change this value to change encoder input data sequence
 `define RAND_SEED			123456
@@ -123,7 +123,10 @@ begin
             enc_valid_in <= 0;
 
         if (count == `CODE_LEN)
+		begin
+			$display("Info: Total: %d, Error: %d, BER: %f", total_count,dec_out_error,dec_out_error/total_count);
             `END_COMMAND;
+		end	
     end
 end
 
@@ -221,17 +224,17 @@ begin
 		// compare decoder output to encoder input
 		if (dec_bit_out != enc_in_buf[buf_out_cnt])
 		begin
-			$display("Error: decoder output failure.");
-			dec_out_error <= 1;
-			repeat (5) @(posedge clock);
-            `END_COMMAND;
+			//$display("Error: decoder output failure.");
+			dec_out_error <= dec_out_error+1;
+			//repeat (5) @(posedge clock);
+            //`END_COMMAND;
 		end
 
 		// update buffer output counter
         if (buf_out_cnt == 2*`OUT_NUM-1)
 			begin
 				buf_out_cnt <= 0;
-				$display("Info: decoder output correct at bit index %d", total_count);
+				//$display("Info: decoder output correct at bit index %d", total_count);
 			end
 		else
 			buf_out_cnt <= buf_out_cnt + 1;
