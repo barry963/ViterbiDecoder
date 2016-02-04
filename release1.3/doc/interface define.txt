@@ -1,0 +1,35 @@
+decoder 
+(
+mclk,  // clock
+rst, // reset
+srst, // soft reset
+valid_in, // symbol valid 
+symbol0,  // symbol 0
+symbol1,  // symbol 1
+//frm_in,   // frame signal indicate the begin and end of a input frame.
+	  // high level avaliable
+pattern,  // punctured pattern
+tb_direct, // ask the decoder to traceback at once use the state Zero.
+	   // high avaliable for one cycle.
+
+tb_direct_o,  // tb_direct signal at the output side, indicate direct traceback end.
+//frm_out,  // output singal for indicating the begin and end of an output frame. 
+	  // high to low or low to high indicate an edge of frame.
+bit_out,  // decoded bit
+valid_out, // valid signal for bit_out;
+
+)
+
+How to use
+
+symbol     __|----|_|---------|_|---|___|-------|_|----
+valid_in   _____|-----|_____|------------|___|----|____
+tb_dir     ____________________________________|--|____
+frame      __|------------------------------------|____
+tb_dir_o   _________________________________________________ ...  ____|--|____
+
+
+The clock of decoder is half of frequency of symbol.
+
+Replace sync_mem with that provided by FPGA vendor
+
