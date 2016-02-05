@@ -48,15 +48,15 @@ always @(shift_cnt or rd_sm0_shift or rd_sm1_shift)
 begin
     case(shift_cnt)
 	0:
-	begin
-	    rd_sm0=rd_sm0_shift;
-	    rd_sm1=rd_sm1_shift;
-	end
+		begin
+			rd_sm0=rd_sm0_shift;
+			rd_sm1=rd_sm1_shift;
+		end
 	1:
-	begin
-	    rd_sm0=rd_sm1_shift;
-	    rd_sm1=rd_sm0_shift;
-	end
+		begin
+			rd_sm0=rd_sm1_shift;
+			rd_sm1=rd_sm0_shift;
+		end
 	default:;
     endcase
 end
@@ -65,15 +65,15 @@ always @(shift_cnt or wr_sm0 or wr_sm1)
 begin
     case(shift_cnt)
 	0:
-	begin
-	    wr_sm0_shift=wr_sm0;
-	    wr_sm1_shift=wr_sm1;
-	end
+		begin
+			wr_sm0_shift=wr_sm0;
+			wr_sm1_shift=wr_sm1;
+		end
 	1:
-	begin
-	    wr_sm0_shift=wr_sm1;
-	    wr_sm1_shift=wr_sm0;
-	end
+		begin
+			wr_sm0_shift=wr_sm1;
+			wr_sm1_shift=wr_sm0;
+		end
 	default:;
     endcase
 end
@@ -84,16 +84,16 @@ begin
     if(rst)
     begin
         for(i=0;i<`MAX_SLICE;i=i+1)
-        begin
-            regfbank0[i]<='b0;
-            regfbank1[i]<='b0;    
-        end
-    end
+			begin
+				regfbank0[i]<='b0;
+				regfbank1[i]<='b0;    
+			end
+		end
     else if(valid)
-    begin
-    	regfbank0[adr0_shift]<=wr_sm0_shift;		//////////////////
-    	regfbank1[adr1_shift]<=wr_sm1_shift;		//////////////////
-    end
+		begin
+			regfbank0[adr0_shift]<=wr_sm0_shift;		//////////////////
+			regfbank1[adr1_shift]<=wr_sm1_shift;		//////////////////
+		end
 end
 assign rd_sm0_shift = regfbank0[adr0_shift];  ////////////////////////////
 assign rd_sm1_shift = regfbank1[adr1_shift];  ////////////////////////////

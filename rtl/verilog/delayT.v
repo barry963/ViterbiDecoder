@@ -14,19 +14,19 @@ module delayT(mclk, rst, in, out);
     always @(posedge mclk or posedge rst)
     begin
     	if(rst)
-	begin
-		for(temp=0;temp<Delay_Count;temp=temp+1)
 		begin
-	    		regs[temp]<=0;
+			for(temp=0;temp<Delay_Count;temp=temp+1)
+				begin
+						regs[temp]<=0;
+				end
 		end
-	end
 	else 
-	begin
-		regs[0]<=in;
-		for(temp=1;temp<Delay_Count;temp=temp+1)
 		begin
-	    		regs[temp]<=regs[temp-1];
+			regs[0]<=in;
+				for(temp=1;temp<Delay_Count;temp=temp+1)
+					begin
+							regs[temp]<=regs[temp-1];
+					end
 		end
-	end
     end
 endmodule

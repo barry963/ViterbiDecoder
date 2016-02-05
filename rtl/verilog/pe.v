@@ -65,15 +65,14 @@ smu smu_i
 always @(posedge mclk or posedge rst)
 begin
     if(rst)
-    begin
-	dec0<=0;        ///////////////////////////////////
-	dec1<=0;        ///////////////////////////////////
-    end
+		begin
+		dec0<=0;        ///////////////////////////////////
+		dec1<=0;        ///////////////////////////////////
+		end
     else if(valid)
-    begin
-	dec0<=wire_dec0;
-	dec1<=wire_dec1;
-	
-    end
+		begin
+		dec0<=wire_dec0;
+		dec1<=wire_dec1;		
+		end
 end
 endmodule
