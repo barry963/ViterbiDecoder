@@ -21,7 +21,7 @@
 //`define VCD_DUMP_ENABLE     1
 
 // the length of the code source
-`define CODE_LEN            100000
+`define CODE_LEN            1000
 
 // data generation seed - change this value to change encoder input data sequence
 `define RAND_SEED			123456
