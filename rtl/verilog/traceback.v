@@ -247,68 +247,68 @@ begin
         During_send_data <= 0;
     end
     else if(valid_in)
-    begin
-        // if input is valid, we will always write decs into ram.
-        wr_en<=1;
-        wr_data<={dec0, dec1, dec2, dec3, dec4, dec5, dec6, dec7, dec8, dec9, dec10, dec11, dec12, dec13, dec14, dec15, dec16, dec17, dec18, dec19, dec20, dec21, dec22, dec23, dec24, dec25, dec26, dec27, dec28, dec29, dec30, dec31};
-        wr_adr<=wr_adr+1; 
-        // if during trace back
-        if(During_traback&&Is_not_first_3blocks)   
-        begin
-            // Trace back. Do three things: write decs to ram , read read decs from 
-            // ram for generate next read address and send data to filo
-            filo_in<=rd_bit[`V-1:0];
-            rd_adr_col<=dec_rd_adr_col;
-	        state<={next_state[`W+`U-1:0], next_state[`W+`U+`V-1:`W+`U]};
-            // scratch
-            // {rd_adr_byte, rd_bit}<={rd_adr_byte[`U-`V-1:0], rd_bit[`W+`V-1:`V], dec, rd_adr_byte[`U-1:`U-`V]};       
-            // {rd_adr_byte, rd_bit}<={rd_bit[`W+`V-1:`V], dec, rd_adr_byte[`U-1:`U-`V]};    
-            // 
-        end
-        
-        // decide whether send data to filo
-        // if have trace back enough bits, we can send out dec
-        if((wr_adr[`OUT_NUM_RADIX-1:0]==`LEN-`OUT) && Is_not_first_3blocks)
-        begin
-            // Trace back and send out dec to filo
-            en_filo_in<=1;
-            During_send_data<=1;
-        end
-        // else if have send out all data, stop send data
-        else if((wr_adr[`OUT_NUM_RADIX-1:0]==`LEN-1) && Is_not_first_3blocks)
-        begin
-            // For the abnormal condition `LEN==`OUT_NUM
-            en_filo_in<=1;
-            During_send_data<=0;
-        end 
-        else
-            en_filo_in<=During_send_data;
-        
-        // decide whether begin a trace or stop a trace
-        if(wr_adr[`OUT_NUM_RADIX-1:0]==`OUT_NUM-1)
-        begin
-            // Initialize a trace action
-            if(dummy_cnt==`DUMMY_BLOCK_NUM)   // It is already not the dummy block, so dont add it
-            begin
-                Is_not_first_3blocks<=1;
-                During_traback<=1;
-                rd_adr_col<=wr_adr[`RAM_ADR_WIDTH-1:`U]-1;
-                state<=0;    //{(`U-`V)'b0, `W'b0, `V'b0, `V'b0};    ////////////////////
-            end
-            else
-                dummy_cnt<=dummy_cnt+1;
-        end
-        // else if we have trace back to the end
-        else 
-        if(wr_adr[`OUT_NUM_RADIX-1:0]==`LEN-1)
-            During_traback<=0;
-    end
+		begin
+			// if input is valid, we will always write decs into ram.
+			wr_en<=1;
+			wr_data<={dec0, dec1, dec2, dec3, dec4, dec5, dec6, dec7, dec8, dec9, dec10, dec11, dec12, dec13, dec14, dec15, dec16, dec17, dec18, dec19, dec20, dec21, dec22, dec23, dec24, dec25, dec26, dec27, dec28, dec29, dec30, dec31};
+			wr_adr<=wr_adr+1; 
+			// if during trace back
+			if(During_traback&&Is_not_first_3blocks)   
+				begin
+					// Trace back. Do three things: write decs to ram , read read decs from 
+					// ram for generate next read address and send data to filo
+					filo_in<=rd_bit[`V-1:0];
+					rd_adr_col<=dec_rd_adr_col;
+					state<={next_state[`W+`U-1:0], next_state[`W+`U+`V-1:`W+`U]};
+					// scratch
+					// {rd_adr_byte, rd_bit}<={rd_adr_byte[`U-`V-1:0], rd_bit[`W+`V-1:`V], dec, rd_adr_byte[`U-1:`U-`V]};       
+					// {rd_adr_byte, rd_bit}<={rd_bit[`W+`V-1:`V], dec, rd_adr_byte[`U-1:`U-`V]};    
+					// 
+				end
+			
+			// decide whether send data to filo
+			// if have trace back enough bits, we can send out dec
+			if((wr_adr[`OUT_NUM_RADIX-1:0]==`LEN-`OUT) && Is_not_first_3blocks)
+				begin
+					// Trace back and send out dec to filo
+					en_filo_in<=1;
+					During_send_data<=1;
+				end
+			// else if have send out all data, stop send data
+			else if((wr_adr[`OUT_NUM_RADIX-1:0]==`LEN-1) && Is_not_first_3blocks)
+				begin
+					// For the abnormal condition `LEN==`OUT_NUM
+					en_filo_in<=1;
+					During_send_data<=0;
+				end 
+			else
+				en_filo_in<=During_send_data;
+			
+			// decide whether begin a trace or stop a trace
+			if(wr_adr[`OUT_NUM_RADIX-1:0]==`OUT_NUM-1)
+				begin
+					// Initialize a trace action
+					if(dummy_cnt==`DUMMY_BLOCK_NUM)   // It is already not the dummy block, so dont add it
+						begin
+							Is_not_first_3blocks<=1;
+							During_traback<=1;
+							rd_adr_col<=wr_adr[`RAM_ADR_WIDTH-1:`U]-1;
+							state<=0;    //{(`U-`V)'b0, `W'b0, `V'b0, `V'b0};    ////////////////////
+						end
+					else
+						dummy_cnt<=dummy_cnt+1;
+				end
+			// else if we have trace back to the end
+			else 
+				if(wr_adr[`OUT_NUM_RADIX-1:0]==`LEN-1)
+					During_traback<=0;
+		end
     else    // input decs are not valid                  
-    begin
-        // Hold the right values
-        wr_en<=0;
-        en_filo_in<=0;
-    end
+		begin
+			// Hold the right values
+			wr_en<=0;
+			en_filo_in<=0;
+		end
 end
 
 // some scratch
