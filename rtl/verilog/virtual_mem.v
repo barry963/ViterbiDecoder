@@ -22,7 +22,7 @@
 //`define NOMEMORY
 
 module sync_mem(clk, wr_data, wr_adr, wr_en, rd_adr, rd_en, rd_data);
-    // Hits:
+    // Hints:
     // the output data of the async_mem should be unregistered
     // sync_mem is not
     parameter DATA_WIDTH=`RAM_BYTE_WIDTH;
@@ -42,15 +42,17 @@ module sync_mem(clk, wr_data, wr_adr, wr_en, rd_adr, rd_en, rd_data);
     reg[DATA_WIDTH-1:0] mem[0:0];
     always @(posedge clk )
     begin 
-    if (rd_en) rd_data<=mem[0];
-    else rd_data<='bx;
-    
-	if(wr_en&&wr_adr==0&&rd_adr==0)
-	begin
-	    mem[0]<=wr_data;
-	end
-	else
-	    mem[0]<=1;
+		if (rd_en) 
+			rd_data<=mem[0];
+		else 
+			rd_data<='bx;
+		
+		if(wr_en&&wr_adr==0&&rd_adr==0)
+			begin
+				mem[0]<=wr_data;
+			end
+		else
+			mem[0]<=1;
     end
 `else
     reg [DATA_WIDTH - 1:0] mem[1023:0];
@@ -65,12 +67,14 @@ module sync_mem(clk, wr_data, wr_adr, wr_en, rd_adr, rd_en, rd_data);
     
     always @(posedge clk)
     begin  
-    	if (rd_en) rd_data<=mem[rd_adr];
-    	else rd_data<='bx;
+    	if (rd_en) 
+			rd_data<=mem[rd_adr];
+    	else 
+			rd_data<='bx;
 	    if(wr_en)
-	    begin
-	        mem[wr_adr]<=wr_data;
-	    end
+			begin
+				mem[wr_adr]<=wr_data;
+			end
     end
 `endif
 endmodule

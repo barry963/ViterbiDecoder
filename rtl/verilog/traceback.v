@@ -189,63 +189,63 @@ end
 always @(posedge clk or posedge rst)
 begin
 	if(rst)
-	begin   
-		rd_en_dl<=0;
-		wr_data_dl<=0;
-		wr_rd_simu<=0;
-	end 
+		begin   
+			rd_en_dl<=0;
+			wr_data_dl<=0;
+			wr_rd_simu<=0;
+		end 
 	else if (srst)
-	begin   
-		rd_en_dl<=0;
-		wr_data_dl<=0;
-		wr_rd_simu<=0;
-	end
+		begin   
+			rd_en_dl<=0;
+			wr_data_dl<=0;
+			wr_rd_simu<=0;
+		end
 	else
 	begin
 		rd_en_dl<=rd_en;
 		if(wr_en&&rd_en&&wr_adr==rd_adr)
-		begin
-			wr_rd_simu<=1;
-			wr_data_dl<=wr_data;
-		end
+			begin
+				wr_rd_simu<=1;
+				wr_data_dl<=wr_data;
+			end
 		else
-		begin
-			wr_rd_simu<=0;
-		end
+			begin
+				wr_rd_simu<=0;
+			end
 	end
 end 
 always @(posedge clk or posedge rst)
 begin
     if(rst)
-    begin
-        dummy_cnt<=0;
-        wr_data<=0;
-        wr_adr<=`OUT_NUM-1;
-        wr_en<=0;
-        rd_adr_col<=0;
-        state<=0;
-	//rd_adr_byte<=0;
-        //rd_bit<=0;
-        en_filo_in<=0;
-        filo_in<=0;
-        Is_not_first_3blocks<=0;
-        During_traback<=0;
-        During_send_data<=0;
-    end
+		begin
+			dummy_cnt<=0;
+			wr_data<=0;
+			wr_adr<=`OUT_NUM-1;
+			wr_en<=0;
+			rd_adr_col<=0;
+			state<=0;
+		//rd_adr_byte<=0;
+			//rd_bit<=0;
+			en_filo_in<=0;
+			filo_in<=0;
+			Is_not_first_3blocks<=0;
+			During_traback<=0;
+			During_send_data<=0;
+		end
     else if (srst)
-    begin
-        dummy_cnt <= 0;
-        wr_data <= 0;
-        wr_adr <= `OUT_NUM-1;
-        wr_en <= 0;
-        rd_adr_col <= 0;
-        state <= 0;
-        en_filo_in <= 0;
-        filo_in <= 0;
-        Is_not_first_3blocks <= 0;
-        During_traback <= 0;
-        During_send_data <= 0;
-    end
+		begin
+			dummy_cnt <= 0;
+			wr_data <= 0;
+			wr_adr <= `OUT_NUM-1;
+			wr_en <= 0;
+			rd_adr_col <= 0;
+			state <= 0;
+			en_filo_in <= 0;
+			filo_in <= 0;
+			Is_not_first_3blocks <= 0;
+			During_traback <= 0;
+			During_send_data <= 0;
+		end
     else if(valid_in)
 		begin
 			// if input is valid, we will always write decs into ram.

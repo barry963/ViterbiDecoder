@@ -171,7 +171,7 @@ begin
 end
 
 // decoder module
-decoder dec
+vit_dec dec
 (
     .mclk(clock),
     .rst(reset),

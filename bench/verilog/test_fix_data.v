@@ -90,7 +90,7 @@ end
 
 wire decoder_out, decoder_en;
             
-decoder decoder_i
+vit_dec decoder_i
 (
     .mclk(mclk), 
     .rst(rst), 
