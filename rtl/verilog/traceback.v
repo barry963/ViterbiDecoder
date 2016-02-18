@@ -201,18 +201,18 @@ begin
 			wr_rd_simu<=0;
 		end
 	else
-	begin
-		rd_en_dl<=rd_en;
-		if(wr_en&&rd_en&&wr_adr==rd_adr)
-			begin
-				wr_rd_simu<=1;
-				wr_data_dl<=wr_data;
-			end
-		else
-			begin
-				wr_rd_simu<=0;
-			end
-	end
+		begin
+			rd_en_dl<=rd_en;
+			if(wr_en&&rd_en&&wr_adr==rd_adr)
+				begin
+					wr_rd_simu<=1;
+					wr_data_dl<=wr_data;
+				end
+			else
+				begin
+					wr_rd_simu<=0;
+				end
+		end
 end 
 always @(posedge clk or posedge rst)
 begin
