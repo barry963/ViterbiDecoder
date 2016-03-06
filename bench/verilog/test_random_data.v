@@ -60,8 +60,8 @@ wire [`SYMBOLS_NUM-1:0] pattern;
 wire dec_bit_out, dec_valid_out;
 integer ccnt, count;
 reg [2*`OUT_NUM-1:0] enc_in_buf;
-integer buf_in_cnt, buf_out_cnt, total_count;
-reg dec_out_error;
+integer buf_in_cnt, buf_out_cnt, total_count, dec_out_error;
+//reg dec_out_error;
 reg[31:0] glb_seed;
 
 // VCD dump - if enabled
@@ -152,15 +152,15 @@ begin
 		begin
 			dec_valid_in <= 1'b1;
 
-			if (enc_symbol0)//1 to 1111, 0 to 0000
-				dec_symbol0 <= `Bit_Width'b1111;
+			if (enc_symbol0)//1 to 0111(+7), 0 to 1001(-7)
+				dec_symbol0 <= `Bit_Width'b0111;
 			else
-				dec_symbol0 <= `Bit_Width'b0000;
+				dec_symbol0 <= `Bit_Width'b1001;
 
 			if (enc_symbol1)
-				dec_symbol1 <= `Bit_Width'b1111;
+				dec_symbol1 <= `Bit_Width'b0111;
 			else
-				dec_symbol1 <= `Bit_Width'b0000;
+				dec_symbol1 <= `Bit_Width'b1001;
 		end
 	else
 		dec_valid_in <= 1'b0;

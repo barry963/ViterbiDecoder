@@ -25,20 +25,20 @@ module brameter2(state_cluster, symbol0, symbol1, pattern, bm00, bm01, bm10, bm1
 parameter Bit_Width=`Bit_Width;
 parameter BM_Width=`BM_Width;
 input[4:0] state_cluster;
-input[Bit_Width-1:0] symbol0, symbol1;
+input signed [Bit_Width-1:0] symbol0, symbol1;
 input[`SYMBOLS_NUM-1:0] pattern;
 output[BM_Width-1:0] bm00, bm01, bm10, bm11;
 reg[BM_Width-1:0] bm00, bm01, bm10, bm11;
 
-reg[Bit_Width-1:0] bm00_0, bm00_1;
-reg[Bit_Width-1:0] bm01_0, bm01_1;
-reg[Bit_Width-1:0] bm10_0, bm10_1;
-reg[Bit_Width-1:0] bm11_0, bm11_1;
+reg signed [Bit_Width-1:0] bm00_0, bm00_1;
+reg signed [Bit_Width-1:0] bm01_0, bm01_1;
+reg signed [Bit_Width-1:0] bm10_0, bm10_1;
+reg signed [Bit_Width-1:0] bm11_0, bm11_1;
 
-reg[Bit_Width-1:0] pn_bm00_0, pn_bm00_1;
-reg[Bit_Width-1:0] pn_bm01_0, pn_bm01_1;
-reg[Bit_Width-1:0] pn_bm10_0, pn_bm10_1;
-reg[Bit_Width-1:0] pn_bm11_0, pn_bm11_1;
+reg signed [Bit_Width-1:0] pn_bm00_0, pn_bm00_1;
+reg signed [Bit_Width-1:0] pn_bm01_0, pn_bm01_1;
+reg signed [Bit_Width-1:0] pn_bm10_0, pn_bm10_1;
+reg signed [Bit_Width-1:0] pn_bm11_0, pn_bm11_1;
 
 wire[1:0] common_part;
 wire[6:0] a;
@@ -50,31 +50,31 @@ always @(common_part or pattern or symbol0 or symbol1)
 begin
 	if(common_part[0])
 	begin
-		bm00_0=~symbol0;
+		bm00_0=-symbol0;
 		bm01_0= symbol0;
 		bm10_0= symbol0;
-		bm11_0=~symbol0;
+		bm11_0=-symbol0;
 	end
 	else
 	begin
 		bm00_0= symbol0;
-		bm01_0=~symbol0;
-		bm10_0=~symbol0;
+		bm01_0=-symbol0;
+		bm10_0=-symbol0;
 		bm11_0= symbol0;
 	end
 
 	if(common_part[1])
 	begin
-		bm00_1=~symbol1;
+		bm00_1=-symbol1;
 		bm01_1= symbol1;
 		bm10_1= symbol1;
-		bm11_1=~symbol1;
+		bm11_1=-symbol1;
 	end
 	else
 	begin
 		bm00_1= symbol1;
-		bm01_1=~symbol1;
-		bm10_1=~symbol1;
+		bm01_1=-symbol1;
+		bm10_1=-symbol1;
 		bm11_1= symbol1;
 	end
 
@@ -111,9 +111,11 @@ begin
 end
 always @(pn_bm00_0 or pn_bm00_1 or pn_bm01_0 or pn_bm01_1 or pn_bm10_0 or pn_bm10_1 or pn_bm11_0 or pn_bm11_1)
 begin
-	bm00=pn_bm00_0+pn_bm00_1;
-	bm01=pn_bm01_0+pn_bm01_1;
-	bm10=pn_bm10_0+pn_bm10_1;
-	bm11=pn_bm11_0+pn_bm11_1;
+	bm00=((pn_bm00_0+pn_bm00_1)>>1)+`MAX_INPUT;
+	bm01=((pn_bm01_0+pn_bm01_1)>>1)+`MAX_INPUT;
+	bm10=((pn_bm10_0+pn_bm10_1)>>1)+`MAX_INPUT;
+	bm11=((pn_bm11_0+pn_bm11_1)>>1)+`MAX_INPUT;
+	//$display("bm00: %d\n",((pn_bm00_0+pn_bm00_1)>>1)+7);
 end	
+
 endmodule
