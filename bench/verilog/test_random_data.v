@@ -21,7 +21,7 @@
 //`define VCD_DUMP_ENABLE     1
 
 // the length of the code source
-`define CODE_LEN            1000
+`define CODE_LEN            320
 
 // data generation seed - change this value to change encoder input data sequence
 `define RAND_SEED			123456
@@ -97,37 +97,33 @@ end
 always @(posedge clock or posedge reset)
 begin
     if (reset)
-    begin
-    	enc_bit_in <= 0;
-        enc_valid_in <= 0;
-        ccnt = 0;
-        count = 0;
-    end
-    else
-    begin
-        ccnt = ccnt + 1;
-        if (ccnt == `SLICE_NUM)
-        begin
-            // input bit is valid
-            enc_valid_in <= 1;
-
-            // update encoder input bit
-            enc_bit_in <= ^glb_seed;
-            glb_seed <= glb_seed + 1;
-
-            // update counters
-            count = count + 1;
-            ccnt = 0;
-        end
-        else
-            enc_valid_in <= 0;
-
-        if (count == `CODE_LEN)
 		begin
-			$display("Info: Total: %d, Error: %d, BER: %f", total_count,dec_out_error,dec_out_error/total_count);
-            `END_COMMAND;
-		end	
-    end
+			enc_bit_in <= 0;
+			enc_valid_in <= 0;
+			ccnt = 0;
+			count = 0;
+		end
+    else
+		begin
+			ccnt = ccnt + 1;
+			//if (ccnt == `SLICE_NUM && count < `CODE_LEN)
+			if (ccnt == `SLICE_NUM)
+				begin
+					// input bit is valid
+					enc_valid_in <= 1;
+
+					// update encoder input bit
+					enc_bit_in <= ^glb_seed;
+					glb_seed <= glb_seed + 1;
+					// update counters
+					count = count + 1;
+					ccnt = 0;
+				end
+			else
+				begin
+					enc_valid_in <= 0;	
+				end
+		end
 end
 
 // encoder module
@@ -156,18 +152,19 @@ begin
 		begin
 			dec_valid_in <= 1'b1;
 
-			if (enc_symbol0)//1 to 111, 0 to 000
-				dec_symbol0 <= `Bit_Width'b111;
+			if (enc_symbol0)//1 to 1111, 0 to 0000
+				dec_symbol0 <= `Bit_Width'b1111;
 			else
-				dec_symbol0 <= `Bit_Width'b000;
+				dec_symbol0 <= `Bit_Width'b0000;
 
 			if (enc_symbol1)
-				dec_symbol1 <= `Bit_Width'b111;
+				dec_symbol1 <= `Bit_Width'b1111;
 			else
-				dec_symbol1 <= `Bit_Width'b000;
+				dec_symbol1 <= `Bit_Width'b0000;
 		end
 	else
 		dec_valid_in <= 1'b0;
+		
 end
 
 // decoder module
@@ -241,6 +238,13 @@ begin
 
 		// update the total decoded bits counter
 		total_count <= total_count + 1;
+		
+		if (total_count == `CODE_LEN)
+			begin
+				$display("Info: Total: %d, Error: %d, BER: %f", total_count,dec_out_error,dec_out_error/total_count);
+				`END_COMMAND;
+			end
+		
 	end
 end
 

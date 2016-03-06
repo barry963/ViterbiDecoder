@@ -18,9 +18,10 @@
 
 `timescale 1ns/1ps
 `define SM_Width 8 
-`define Bit_Width 3 
+`define Bit_Width 4 
 `define BM_Width 4 
 `define SYMBOLS_NUM 2
+`define MAX_INPUT 7
 
 `define U 1
 `define V 1
