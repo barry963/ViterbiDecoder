@@ -21,7 +21,7 @@
 //`define VCD_DUMP_ENABLE     1
 
 // the length of the code source
-`define CODE_LEN            320
+`define CODE_LEN            10302
 
 // data generation seed - change this value to change encoder input data sequence
 `define RAND_SEED			123456
@@ -54,13 +54,23 @@ wire srst = 0;
 reg enc_bit_in, enc_valid_in;
 wire enc_symbol0, enc_symbol1;
 wire enc_valid_out;
-reg [`Bit_Width-1:0] dec_symbol0, dec_symbol1;
+
+//reg [`Bit_Width-1:0] dec_symbol0, dec_symbol1;
+
+wire [`Bit_Width-1:0] dec_symbol0, dec_symbol1;
+reg [7:0] dec_symbol;
+assign  dec_symbol0 [3:0] = dec_symbol[7:4];
+assign  dec_symbol1 [3:0] = dec_symbol[3:0]; 
+
 reg dec_valid_in;
 wire [`SYMBOLS_NUM-1:0] pattern;
 wire dec_bit_out, dec_valid_out;
 integer ccnt, count;
 reg [2*`OUT_NUM-1:0] enc_in_buf;
 integer buf_in_cnt, buf_out_cnt, total_count, dec_out_error;
+
+integer input_file;
+
 //reg dec_out_error;
 reg[31:0] glb_seed;
 
@@ -91,6 +101,22 @@ begin
     buf_out_cnt = 0;
     total_count = 0;
     dec_out_error = 0;
+	
+	
+	
+    // Open the files
+    input_file = $fopen("E:\\Dropbox\\ViterbiDecoder\\benchmark\\Matlab_RAW_LLR.bin", "rb");
+    if (input_file == 0) begin
+        $display("Error: Failed to open input file, Matlab_RAW_LLR.bin\nExiting Simulation.");
+        $finish;
+    end
+	#10000000
+    // Close the files
+    $fclose(input_file);	
+	
+	
+	
+	
 end
 
 // encoder input interface
@@ -145,22 +171,29 @@ begin
 	if (reset)
 		begin
 			dec_valid_in <= 1'b0;
-			dec_symbol0 <= 0;
-			dec_symbol1 <= 0;
+			//dec_symbol0 <= 0;
+			//dec_symbol1 <= 0;
 		end
 	else if (enc_valid_out)
 		begin
 			dec_valid_in <= 1'b1;
 
-			if (enc_symbol0)//1 to 0111(+7), 0 to 1001(-7)
-				dec_symbol0 <= `Bit_Width'b0111;
-			else
-				dec_symbol0 <= `Bit_Width'b1001;
+			// if (enc_symbol0)//1 to 0111(+7), 0 to 1001(-7)
+				// dec_symbol0 <= `Bit_Width'b0111;
+			// else
+				// dec_symbol0 <= `Bit_Width'b1001;
 
-			if (enc_symbol1)
-				dec_symbol1 <= `Bit_Width'b0111;
-			else
-				dec_symbol1 <= `Bit_Width'b1001;
+			// if (enc_symbol1)
+				// dec_symbol1 <= `Bit_Width'b0111;
+			// else
+				// dec_symbol1 <= `Bit_Width'b1001;
+				
+			dec_symbol[7:0]<=$fgetc(input_file);
+			// $display("%d\n",dec_symbol[7:0]);
+
+			//dec_symbol0[`Bit_Width-1:0] <= $fgetc(input_file);
+			//dec_symbol1[`Bit_Width-1:0] <= $fgetc(input_file);			
+				
 		end
 	else
 		dec_valid_in <= 1'b0;
