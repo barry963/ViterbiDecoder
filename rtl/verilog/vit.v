@@ -171,6 +171,7 @@ assign pe15_in_sm0=pe14_out_sm1;
 assign pe15_in_sm1=pe15_out_sm1;             
 
 pe #(0) pe_0(.mclk(mclk), .rst(rst), .slice(slice), .valid(valid_slice), .shift_cnt(shift_cnt), .adr0_shift(adr0_shift), .adr1_shift(adr1_shift), .symbol0(reg_symbol0), .symbol1(reg_symbol1), .pattern(reg_pattern), .in_sm0(pe0_in_sm0), .in_sm1(pe0_in_sm1), .out_sm0(pe0_out_sm0), .out_sm1(pe0_out_sm1), .dec0(pe0_dec0), .dec1(pe0_dec1));
+
 pe #(1) pe_1(.mclk(mclk), .rst(rst), .slice(slice), .valid(valid_slice), .shift_cnt(shift_cnt), .adr0_shift(adr0_shift), .adr1_shift(adr1_shift), .symbol0(reg_symbol0), .symbol1(reg_symbol1), .pattern(reg_pattern), .in_sm0(pe1_in_sm0), .in_sm1(pe1_in_sm1), .out_sm0(pe1_out_sm0), .out_sm1(pe1_out_sm1), .dec0(pe1_dec0), .dec1(pe1_dec1));
 pe #(2) pe_2(.mclk(mclk), .rst(rst), .slice(slice), .valid(valid_slice), .shift_cnt(shift_cnt), .adr0_shift(adr0_shift), .adr1_shift(adr1_shift), .symbol0(reg_symbol0), .symbol1(reg_symbol1), .pattern(reg_pattern), .in_sm0(pe2_in_sm0), .in_sm1(pe2_in_sm1), .out_sm0(pe2_out_sm0), .out_sm1(pe2_out_sm1), .dec0(pe2_dec0), .dec1(pe2_dec1));
 pe #(3) pe_3(.mclk(mclk), .rst(rst), .slice(slice), .valid(valid_slice), .shift_cnt(shift_cnt), .adr0_shift(adr0_shift), .adr1_shift(adr1_shift), .symbol0(reg_symbol0), .symbol1(reg_symbol1), .pattern(reg_pattern), .in_sm0(pe3_in_sm0), .in_sm1(pe3_in_sm1), .out_sm0(pe3_out_sm0), .out_sm1(pe3_out_sm1), .dec0(pe3_dec0), .dec1(pe3_dec1));
@@ -204,4 +205,9 @@ ctrl ctrl_i
     .reg_pattern(reg_pattern), 
     .valid_decs(valid_decs)
 );
+
+// always @(posedge mclk)
+// begin
+		// $display("%d %d",pe0_out_sm0,pe0_out_sm1);
+// end	
 endmodule

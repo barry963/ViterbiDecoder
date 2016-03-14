@@ -52,6 +52,7 @@ module acs2(old_sm0, old_sm1, bm00, bm01, bm10, bm11, new_0sm, new_1sm, dec0, de
 	    result1 = sum01 - sum11;
 	    //select smaller
 	    if(result0[SM_Width-1]==1) // sum00<sum10
+		//if(sum00<sum10) // sum00<sum10
 			begin
 			new_0sm=sum00;
 			dec0=0;
@@ -62,6 +63,7 @@ module acs2(old_sm0, old_sm1, bm00, bm01, bm10, bm11, new_0sm, new_1sm, dec0, de
 			dec0=1;
 			end
 	    if(result1[SM_Width-1]==1) // sum01<sum11
+		//if(sum01<sum11) // sum01<sum11
 			begin
 			new_1sm=sum01;
 			dec1=0;
@@ -70,7 +72,7 @@ module acs2(old_sm0, old_sm1, bm00, bm01, bm10, bm11, new_0sm, new_1sm, dec0, de
 			begin
 			new_1sm=sum11;
 			dec1=1;
-			end
+			end		
     end
 endmodule   
 

@@ -129,7 +129,11 @@ assign wire_rd_adr_col = (valid_in&&wr_adr[`OUT_NUM_RADIX-1:0]==(`OUT_NUM-1)&&du
 assign {rd_dec0, rd_dec1, rd_dec2, rd_dec3, rd_dec4, rd_dec5, rd_dec6, rd_dec7, rd_dec8, rd_dec9, rd_dec10, rd_dec11, rd_dec12, rd_dec13, rd_dec14, rd_dec15, rd_dec16, rd_dec17, rd_dec18, rd_dec19, rd_dec20, rd_dec21, rd_dec22, rd_dec23, rd_dec24, rd_dec25, rd_dec26, rd_dec27, rd_dec28, rd_dec29, rd_dec30, rd_dec31} = wr_rd_simu?wr_data_dl:rd_en_dl?rd_data:0;       ///////////////////////////////////////////////////
 assign dec_rd_adr_col=rd_adr_col-1;
 assign {rd_adr_byte, rd_bit}=state;
-assign next_state={state[`W+`U+`V-1:`V], dec};
+//assign next_state={state[`W+`U+`V-1:`V], dec};
+
+assign next_state = (wire_rd_adr_col==rd_adr_col)?  {state[`W+`U+`V-1:`V], dec}:0;
+
+//reg start_trace_flag ;
 
 always @(rd_bit or rd_dec0 or rd_dec1 or rd_dec2 or rd_dec3 or rd_dec4 or rd_dec5 or rd_dec6 or rd_dec7 or rd_dec8 or rd_dec9 or rd_dec10 or rd_dec11 or rd_dec12 or rd_dec13 or rd_dec14 or rd_dec15 or rd_dec16 or rd_dec17 or rd_dec18 or rd_dec19 or rd_dec20 or rd_dec21 or rd_dec22 or rd_dec23 or rd_dec24 or rd_dec25 or rd_dec26 or rd_dec27 or rd_dec28 or rd_dec29 or rd_dec30 or rd_dec31)
 begin
@@ -193,6 +197,7 @@ begin
 			rd_en_dl<=0;
 			wr_data_dl<=0;
 			wr_rd_simu<=0;
+			//start_trace_flag<=0;
 		end 
 	else if (srst)
 		begin   

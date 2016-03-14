@@ -69,8 +69,8 @@ integer ccnt, count;
 reg [2*`OUT_NUM-1:0] enc_in_buf;
 integer buf_in_cnt, buf_out_cnt, total_count, dec_out_error;
 
-integer input_file;
-
+integer inputLLR_file,matlabraw_file;
+integer f_dec_out;
 //reg dec_out_error;
 reg[31:0] glb_seed;
 
@@ -105,15 +105,21 @@ begin
 	
 	
     // Open the files
-    input_file = $fopen("E:\\Dropbox\\ViterbiDecoder\\benchmark\\Matlab_RAW_LLR.bin", "rb");
-    if (input_file == 0) begin
+    inputLLR_file = $fopen("E:\\Dropbox\\ViterbiDecoder\\benchmark\\Matlab_RAW_LLR.bin", "rb");
+    if (inputLLR_file == 0) begin
         $display("Error: Failed to open input file, Matlab_RAW_LLR.bin\nExiting Simulation.");
         $finish;
     end
-	#10000000
-    // Close the files
-    $fclose(input_file);	
 	
+	matlabraw_file = $fopen("E:\\Dropbox\\ViterbiDecoder\\benchmark\\Matlab_RAW.bin", "rb");
+    if (matlabraw_file == 0) begin
+        $display("Error: Failed to open input file, Matlab_RAW.bin\nExiting Simulation.");
+        $finish;
+    end	
+	#100000000
+    // Close the files
+    $fclose(inputLLR_file);	
+	$fclose(f_dec_out);
 	
 	
 	
@@ -188,11 +194,11 @@ begin
 			// else
 				// dec_symbol1 <= `Bit_Width'b1001;
 				
-			dec_symbol[7:0]<=$fgetc(input_file);
+			dec_symbol[7:0]<=$fgetc(inputLLR_file);
 			// $display("%d\n",dec_symbol[7:0]);
 
-			//dec_symbol0[`Bit_Width-1:0] <= $fgetc(input_file);
-			//dec_symbol1[`Bit_Width-1:0] <= $fgetc(input_file);			
+			//dec_symbol0[`Bit_Width-1:0] <= $fgetc(inputLLR_file);
+			//dec_symbol1[`Bit_Width-1:0] <= $fgetc(inputLLR_file);			
 				
 		end
 	else
@@ -222,22 +228,22 @@ begin
 	if (reset)
 		buf_in_cnt <= 0;
 	else if (enc_valid_in)
-	begin
-		// write next bit
-		enc_in_buf[buf_in_cnt] <= enc_bit_in;
-
-		// check overflow condition & update the buffer address counter
-		if ((buf_in_cnt + 1) == buf_out_cnt)
 		begin
-			$display("Error: data buffer overflow probably due to decoder latency.");
-			repeat (5) @(posedge clock);
-            `END_COMMAND;
-        end
-        else if (buf_in_cnt == 2*`OUT_NUM-1)
-			buf_in_cnt <= 0;
-		else
-			buf_in_cnt <= buf_in_cnt + 1;
-	end
+			// write next bit
+			enc_in_buf[buf_in_cnt] <= enc_bit_in;
+
+			// check overflow condition & update the buffer address counter
+			if ((buf_in_cnt + 1) == buf_out_cnt)
+			begin
+				$display("Error: data buffer overflow probably due to decoder latency.");
+				repeat (5) @(posedge clock);
+				`END_COMMAND;
+			end
+			else if (buf_in_cnt == 2*`OUT_NUM-1)
+				buf_in_cnt <= 0;
+			else
+				buf_in_cnt <= buf_in_cnt + 1;
+		end
 end
 
 // compare decoder output bits to encoder input bits
@@ -304,7 +310,7 @@ begin
 end
 
 // record decoder outputs
-integer f_dec_out;
+
 initial
 	f_dec_out = $fopen(`DEC_OUT_FILE);
 

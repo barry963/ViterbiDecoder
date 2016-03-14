@@ -50,32 +50,32 @@ always @(common_part or pattern or symbol0 or symbol1)
 begin
 	if(common_part[0])
 	begin
-		bm00_0=-symbol0;
-		bm01_0= symbol0;
-		bm10_0= symbol0;
-		bm11_0=-symbol0;
+		bm00_0=symbol0;//- 0 0 -
+		bm01_0=-symbol0;
+		bm10_0=-symbol0;
+		bm11_0=symbol0;
 	end
 	else
 	begin
-		bm00_0= symbol0;
-		bm01_0=-symbol0;
-		bm10_0=-symbol0;
-		bm11_0= symbol0;
+		bm00_0=-symbol0;//0 - - 0
+		bm01_0=symbol0;
+		bm10_0=symbol0;
+		bm11_0=-symbol0;
 	end
 
 	if(common_part[1])
 	begin
-		bm00_1=-symbol1;
-		bm01_1= symbol1;
-		bm10_1= symbol1;
-		bm11_1=-symbol1;
+		bm00_1=symbol1;//- 0 0 -
+		bm01_1=-symbol1;
+		bm10_1=-symbol1;
+		bm11_1=symbol1;
 	end
 	else
 	begin
-		bm00_1= symbol1;
-		bm01_1=-symbol1;
-		bm10_1=-symbol1;
-		bm11_1= symbol1;
+		bm00_1=-symbol1;//0 - - 0
+		bm01_1=symbol1;
+		bm10_1=symbol1;
+		bm11_1=-symbol1;
 	end
 
 	if(pattern[0]==1)

@@ -17,7 +17,7 @@
 
 
 `timescale 1ns/1ps
-`define SM_Width 8 
+`define SM_Width 100 
 `define Bit_Width 4 
 `define BM_Width 4 
 `define SYMBOLS_NUM 2
