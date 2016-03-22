@@ -58,7 +58,6 @@ module vit
     dec30, 
     dec31, 
 	sm_list,
-	slice_outside,
     // sm0, 
     // sm1, 
     // sm2, 
@@ -99,7 +98,6 @@ input[`SYMBOLS_NUM-1:0] pattern;
 output[`V-1:0] dec0, dec1, dec2, dec3, dec4, dec5, dec6, dec7, dec8, dec9, dec10, dec11, dec12, dec13, dec14, dec15, dec16, dec17, dec18, dec19, dec20, dec21, dec22, dec23, dec24, dec25, dec26, dec27, dec28, dec29, dec30, dec31;
 //output[`SM_Width-1:0] sm0, sm1, sm2, sm3, sm4, sm5, sm6, sm7, sm8, sm9, sm10, sm11, sm12, sm13, sm14, sm15, sm16, sm17, sm18, sm19, sm20, sm21, sm22, sm23, sm24, sm25, sm26, sm27, sm28, sm29, sm30, sm31;
 output[`SM_Width*32-1:0] sm_list;
-output[`U-1:0] slice_outside;
 output valid_decs;
 
 wire[`V-1:0] pe0_dec0, pe0_dec1;
@@ -208,7 +206,6 @@ assign pe15_in_sm0=pe14_out_sm1;
 assign pe15_in_sm1=pe15_out_sm1;             
 
 assign sm_list={pe0_out_sm0,pe1_out_sm0,pe2_out_sm0,pe3_out_sm0,pe4_out_sm0,pe5_out_sm0,pe6_out_sm0,pe7_out_sm0,pe8_out_sm0,pe9_out_sm0,pe10_out_sm0,pe11_out_sm0,pe12_out_sm0,pe13_out_sm0,pe14_out_sm0,pe15_out_sm0,pe0_out_sm1,pe1_out_sm1,pe2_out_sm1,pe3_out_sm1,pe4_out_sm1,pe5_out_sm1,pe6_out_sm1,pe7_out_sm1,pe8_out_sm1,pe9_out_sm1,pe10_out_sm1,pe11_out_sm1,pe12_out_sm1,pe13_out_sm1,pe14_out_sm1,pe15_out_sm1};
-assign slice_outside=slice;
 // assign sm0=pe0_out_sm0;             
 // assign sm1=pe1_out_sm0;             
 // assign sm2=pe2_out_sm0;             

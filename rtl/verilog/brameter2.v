@@ -49,73 +49,73 @@ assign common_part[1] = a[5]^a[4]^a[3];
 always @(common_part or pattern or symbol0 or symbol1)
 begin
 	if(common_part[0])
-	begin
-		bm00_0=symbol0;//- 0 0 -
-		bm01_0=-symbol0;
-		bm10_0=-symbol0;
-		bm11_0=symbol0;
-	end
+		begin
+			bm00_0=symbol0;//- 0 0 -
+			bm01_0=-symbol0;
+			bm10_0=-symbol0;
+			bm11_0=symbol0;
+		end
 	else
-	begin
-		bm00_0=-symbol0;//0 - - 0
-		bm01_0=symbol0;
-		bm10_0=symbol0;
-		bm11_0=-symbol0;
-	end
+		begin
+			bm00_0=-symbol0;//0 - - 0
+			bm01_0=symbol0;
+			bm10_0=symbol0;
+			bm11_0=-symbol0;
+		end
 
 	if(common_part[1])
-	begin
-		bm00_1=symbol1;//- 0 0 -
-		bm01_1=-symbol1;
-		bm10_1=-symbol1;
-		bm11_1=symbol1;
-	end
+		begin
+			bm00_1=symbol1;//- 0 0 -
+			bm01_1=-symbol1;
+			bm10_1=-symbol1;
+			bm11_1=symbol1;
+		end
 	else
-	begin
-		bm00_1=-symbol1;//0 - - 0
-		bm01_1=symbol1;
-		bm10_1=symbol1;
-		bm11_1=-symbol1;
-	end
+		begin
+			bm00_1=-symbol1;//0 - - 0
+			bm01_1=symbol1;
+			bm10_1=symbol1;
+			bm11_1=-symbol1;
+		end
 
 	if(pattern[0]==1)
-	begin
-		pn_bm00_0=bm00_0;
-		pn_bm01_0=bm01_0;
-		pn_bm10_0=bm10_0;
-		pn_bm11_0=bm11_0;
-	end
+		begin
+			pn_bm00_0=bm00_0;
+			pn_bm01_0=bm01_0;
+			pn_bm10_0=bm10_0;
+			pn_bm11_0=bm11_0;
+		end
 	else
-	begin
-		pn_bm00_0=0;
-		pn_bm01_0=0;
-		pn_bm10_0=0;
-		pn_bm11_0=0;
-	end
+		begin
+			pn_bm00_0=0;
+			pn_bm01_0=0;
+			pn_bm10_0=0;
+			pn_bm11_0=0;
+		end
 
 	if(pattern[1]==1)
-	begin
-		pn_bm00_1=bm00_1;
-		pn_bm01_1=bm01_1;
-		pn_bm10_1=bm10_1;
-		pn_bm11_1=bm11_1;
-	end
+		begin
+			pn_bm00_1=bm00_1;
+			pn_bm01_1=bm01_1;
+			pn_bm10_1=bm10_1;
+			pn_bm11_1=bm11_1;
+		end
 	else
-	begin
-		pn_bm00_1=0;
-		pn_bm01_1=0;
-		pn_bm10_1=0;
-		pn_bm11_1=0;
-	end
+		begin
+			pn_bm00_1=0;
+			pn_bm01_1=0;
+			pn_bm10_1=0;
+			pn_bm11_1=0;
+		end
 
 end
 always @(pn_bm00_0 or pn_bm00_1 or pn_bm01_0 or pn_bm01_1 or pn_bm10_0 or pn_bm10_1 or pn_bm11_0 or pn_bm11_1)
-begin
-	bm00=((pn_bm00_0+pn_bm00_1)>>1)+`MAX_INPUT;
-	bm01=((pn_bm01_0+pn_bm01_1)>>1)+`MAX_INPUT;
-	bm10=((pn_bm10_0+pn_bm10_1)>>1)+`MAX_INPUT;
-	bm11=((pn_bm11_0+pn_bm11_1)>>1)+`MAX_INPUT;
-	//$display("bm00: %d\n",((pn_bm00_0+pn_bm00_1)>>1)+7);
-end	
+	begin
+		bm00=((pn_bm00_0+pn_bm00_1)>>1)+`MAX_INPUT;
+		bm01=((pn_bm01_0+pn_bm01_1)>>1)+`MAX_INPUT;
+		bm10=((pn_bm10_0+pn_bm10_1)>>1)+`MAX_INPUT;
+		bm11=((pn_bm11_0+pn_bm11_1)>>1)+`MAX_INPUT;
+		//$display("bm00: %d\n",((pn_bm00_0+pn_bm00_1)>>1)+7);
+	end	
 
 endmodule

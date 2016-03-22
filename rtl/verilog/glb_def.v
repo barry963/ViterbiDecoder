@@ -22,6 +22,7 @@
 `define BM_Width 4 
 `define SYMBOLS_NUM 2
 `define MAX_INPUT 7
+`define MAX_PM 156
 
 `define U 1
 `define V 1

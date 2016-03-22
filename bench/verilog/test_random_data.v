@@ -38,8 +38,8 @@
 // traceback depth used to bound the decoder delay
 `define OUT_NUM             64
 
-// the simulation cycle time of clock
-`define CLK_TIME            1
+// the simulation cycle time of clock 1->500M 10->50M 
+`define CLK_TIME            10
 
 // simulation end command
 // use $stop command for modelsim and $finish for icarus verilog
@@ -273,14 +273,17 @@ begin
 				//$display("Info: decoder output correct at bit index %d", total_count);
 			end
 		else
-			buf_out_cnt <= buf_out_cnt + 1;
+			begin
+				buf_out_cnt <= buf_out_cnt + 1;
+				total_count <= total_count + 1;
+			end	
 
 		// update the total decoded bits counter
-		total_count <= total_count + 1;
+		
 		
 		if (total_count == `CODE_LEN)
 			begin
-				$display("Info: Total: %d, Error: %d, BER: %f", total_count,dec_out_error,dec_out_error/total_count);
+				$display("Info: T0tal: %d, Error: %d, BER: %f", total_count,dec_out_error,dec_out_error/total_count);
 				`END_COMMAND;
 			end
 		

@@ -79,7 +79,6 @@ module traceback
     dec30, 
     dec31, 
 	sm_list,
-	slice,
     // sm0, 
     // sm1, 
     // sm2, 
@@ -184,7 +183,6 @@ input clk, rst, srst, valid_in;
 input[`V-1:0] dec0, dec1, dec2, dec3, dec4, dec5, dec6, dec7, dec8, dec9, dec10, dec11, dec12, dec13, dec14, dec15, dec16, dec17, dec18, dec19, dec20, dec21, dec22, dec23, dec24, dec25, dec26, dec27, dec28, dec29, dec30, dec31;                   
 //input[`SM_Width-1:0] sm0, sm1, sm2, sm3, sm4, sm5, sm6, sm7, sm8, sm9, sm10, sm11, sm12, sm13, sm14, sm15, sm16, sm17, sm18, sm19, sm20, sm21, sm22, sm23, sm24, sm25, sm26, sm27, sm28, sm29, sm30, sm31;
 input [`SM_Width*32-1:0] sm_list;
-input [`U-1:0] slice;
 input[`RAM_BYTE_WIDTH-1:0] rd_data;
 output[`RAM_ADR_WIDTH-1:0] rd_adr;
 output rd_en, wr_en;
@@ -226,24 +224,18 @@ assign {rd_dec0, rd_dec1, rd_dec2, rd_dec3, rd_dec4, rd_dec5, rd_dec6, rd_dec7, 
 assign dec_rd_adr_col=rd_adr_col-1;
 assign {rd_adr_byte, rd_bit}=state;
 //assign next_state={state[`W+`U+`V-1:`V], dec};
-//wire req_min_sm;
-wire [`U-1:0] slice;
+wire req_min_sm;
 
 integer min_sm_num, i;
-wire [`SM_Width-1:0]  min_sm_slice;
-wire [5:0]  min_sm_index_slice;
-
-wire [5:0]  min_sm_index;
-
+wire [`SM_Width-1:0]  min_sm;
+wire [4:0]  min_sm_index;
 wire en_com_in;
 
-reg [`SM_Width-1:0]  min_sm_reg_slice0;
-reg [5:0]  min_sm_index_reg_slice0;
+reg [`SM_Width-1:0]  min_sm_reg;
+reg [4:0]  min_sm_index_reg;
 
-assign next_state = (wire_rd_adr_col==rd_adr_col)&&rd_en?  {state[`W+`U+`V-1:`V], dec}:min_sm_index;
-//assign req_min_sm=(wire_rd_adr_col==rd_adr_col)&&rd_en;
-
-assign min_sm_index= (slice==1)?((min_sm_reg_slice0[7]^min_sm_slice[7]^((min_sm_reg_slice0[6:0]<=min_sm_slice[6:0])?1:0))?min_sm_index_reg_slice0:min_sm_index_slice):0;
+assign next_state = req_min_sm?  {state[`W+`U+`V-1:`V], dec}:min_sm_num;
+assign req_min_sm=(wire_rd_adr_col==rd_adr_col)&&rd_en;
 
 //wire [4:0] sm_list_index [15:0]={0,32,1,33,2,33,3,34,4,35,5,36,6,37,7,38,8,39,9,40,10,41,11,42,12,43,13,44,14,45,15,46};
 
@@ -251,28 +243,27 @@ assign min_sm_index= (slice==1)?((min_sm_reg_slice0[7]^min_sm_slice[7]^((min_sm_
 
 //reg start_trace_flag ;
 
-// always @(posedge clk) 
+// always @(sm_list) 
 // begin
-		// //min_sm<=`MAX_PM;
+		// min_sm<=`MAX_PM;
         // for(i=0;i<`DEC_NUM;i=i+1)
 			// begin
-			// // if(sm_list[i*`SM_Width+:`SM_Width]<min_sm)
-				// // begin
-					// // min_sm<=sm_list[i*`SM_Width+:`SM_Width];
-				// // end
-			// $display("#%d: %d  ",i,sm_list[i*`SM_Width+:`SM_Width]);	
+			// if(sm_list[i*`SM_Width+:`SM_Width]<min_sm)
+				// begin
+					// min_sm<=sm_list[i*`SM_Width+:`SM_Width];
+				// end
+			// $display("(%d %d) ",sm_list[i*`SM_Width+:`SM_Width],min_sm);	
 			// end
 		// //min_sm<=sm_list[0*`SM_Width+:`SM_Width];	
 		
 // end	
 
-SelectMiniPM selectminiPM(.array(sm_list),.slice(slice),.indexG(min_sm_index_slice),.valueG(min_sm_slice));
-always @(posedge clk) 
-begin
-	min_sm_reg_slice0=min_sm_slice;
-	min_sm_index_reg_slice0=min_sm_index_slice;
-end
-
+//SelectMiniPM selectminiPM(.array(sm_list),.indexG(min_sm_index),.valueG(min_sm));
+// always @(sm_list) 
+// begin
+	// min_sm_reg=min_sm;
+	// min_sm_index_reg=min_sm_index;
+// end
 
 always @(rd_bit or rd_dec0 or rd_dec1 or rd_dec2 or rd_dec3 or rd_dec4 or rd_dec5 or rd_dec6 or rd_dec7 or rd_dec8 or rd_dec9 or rd_dec10 or rd_dec11 or rd_dec12 or rd_dec13 or rd_dec14 or rd_dec15 or rd_dec16 or rd_dec17 or rd_dec18 or rd_dec19 or rd_dec20 or rd_dec21 or rd_dec22 or rd_dec23 or rd_dec24 or rd_dec25 or rd_dec26 or rd_dec27 or rd_dec28 or rd_dec29 or rd_dec30 or rd_dec31)
 begin
@@ -440,9 +431,9 @@ begin
 							Is_not_first_3blocks<=1;
 							During_traback<=1;
 							rd_adr_col<=wr_adr[`RAM_ADR_WIDTH-1:`U]-1;
-							state<={next_state[`W+`U-1:0], next_state[`W+`U+`V-1:`W+`U]};    //{(`U-`V)'b0, `W'b0, `V'b0, `V'b0};    ////////////////////
-							//min_sm_reg<=min_sm;
-							//min_sm_index_reg<=min_sm_index;
+							state<=(next_state<<1);    //{(`U-`V)'b0, `W'b0, `V'b0, `V'b0};    ////////////////////
+							// min_sm_reg<=min_sm;
+							// min_sm_index_reg<=min_sm_index;
 							//en_com_in=1;
 						end
 					else
