@@ -275,7 +275,7 @@ begin
 		else
 			begin
 				buf_out_cnt <= buf_out_cnt + 1;
-				total_count <= total_count + 1;
+				total_count <= total_count + 1; 
 			end	
 
 		// update the total decoded bits counter

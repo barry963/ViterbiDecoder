@@ -1,0 +1,21 @@
+
+    vlog +incdir+..\\..\\rtl\\verilog \
+    +acc=rn \
+    ..\\..\\rtl\\verilog\\delayT.v \
+    ..\\..\\rtl\\verilog\\acs2.v \
+    ..\\..\\rtl\\verilog\\brameter2.v \
+    ..\\..\\rtl\\verilog\\butfly2.v \
+    ..\\..\\rtl\\verilog\\ctrl.v \
+    ..\\..\\rtl\\verilog\\centrofilo.v \
+    ..\\..\\rtl\\verilog\\smu.v \
+    ..\\..\\rtl\\verilog\\pe.v \
+    ..\\..\\rtl\\verilog\\dirtraback.v \
+    ..\\..\\rtl\\verilog\\tbdir_mod.v \
+    ..\\..\\rtl\\verilog\\vit.v \
+    ..\\..\\rtl\\verilog\\virtual_mem.v \
+    ..\\..\\rtl\\verilog\\decoder.v \
+    ..\\..\\rtl\\verilog\\encoder.v \
+    ..\\..\\bench\\verilog\\test_fix_data.v \
+    ..\\..\\bench\\verilog\\test_random_data.v 
+
+vsim work.test_random_data

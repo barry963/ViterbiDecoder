@@ -1,0 +1,1 @@
+perl ..\..\perl\Architect.pl
