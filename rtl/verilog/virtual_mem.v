@@ -17,8 +17,8 @@
 
 `include "glb_def.v"
 
-`define RAM_BYTE_WIDTH 32
-`define RAM_ADR_WIDTH 10 
+
+ 
 //`define NOMEMORY
 
 module sync_mem(clk, wr_data, wr_adr, wr_en, rd_adr, rd_en, rd_data);
@@ -55,7 +55,7 @@ module sync_mem(clk, wr_data, wr_adr, wr_en, rd_adr, rd_en, rd_data);
 			mem[0]<=1;
     end
 `else
-    reg [DATA_WIDTH - 1:0] mem[1023:0];
+    reg [DATA_WIDTH - 1:0] mem[191:0];
     //integer temp;
     //initial 
     //begin

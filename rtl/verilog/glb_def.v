@@ -24,6 +24,9 @@
 `define MAX_INPUT 7
 `define MAX_PM 156
 
+`define RAM_BYTE_WIDTH  32 
+`define RAM_ADR_WIDTH 	8 //10
+
 `define U 1
 `define V 1
 `define W 4

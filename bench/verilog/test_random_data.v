@@ -234,6 +234,7 @@ begin
 
 			// check overflow condition & update the buffer address counter
 			if ((buf_in_cnt + 1) == buf_out_cnt)
+			//if ((buf_in_cnt) == buf_out_cnt)
 			begin
 				$display("Error: data buffer overflow probably due to decoder latency.");
 				repeat (5) @(posedge clock);

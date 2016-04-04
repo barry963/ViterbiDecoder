@@ -19,8 +19,8 @@
 
 `include "glb_def.v"
 
-`define RAM_BYTE_WIDTH 32
-`define RAM_ADR_WIDTH 10 
+
+ 
 
 module vit_dec
 (
@@ -207,7 +207,7 @@ traceback traback_i
 	.filo_in(filo_in)
 );
 
-sync_mem #(32,10) sync_mem0
+sync_mem #(`RAM_BYTE_WIDTH, `RAM_ADR_WIDTH) sync_mem0
 (
 	.clk(mclk), 
 	.wr_data(wr_data), 
