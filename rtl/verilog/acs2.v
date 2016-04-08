@@ -40,7 +40,7 @@ module acs2(old_sm0, old_sm1, bm00, bm01, bm10, bm11, new_0sm, new_1sm, dec0, de
     reg signed [SM_Width-1:0] new_0sm, new_1sm;
     reg dec0, dec1;
     
-	reg comp0, comp1;
+	//reg comp0, comp1;
 	
     always @(old_sm0 or  old_sm1 or bm00 or bm01 or bm10 or bm11)
 	begin//bmXY inset Z -> bmYZ
@@ -52,10 +52,12 @@ module acs2(old_sm0, old_sm1, bm00, bm01, bm10, bm11, new_0sm, new_1sm, dec0, de
 	    //decision is not as simple as usually.It must be changed.
 	    //result0 = sum00 - sum10;
 	    //result1 = sum01 - sum11;
-		comp0 = sum00[SM_Width-1]^sum10[SM_Width-1]^((sum00[SM_Width-2:0]<sum10[SM_Width-2:0])?1:0);
-		comp1 = sum01[SM_Width-1]^sum11[SM_Width-1]^((sum01[SM_Width-2:0]<sum11[SM_Width-2:0])?1:0);
-	    //select smaller
-		if(comp0)
+		
+		//comp0 = sum00[SM_Width-1]^sum10[SM_Width-1]^((sum00[SM_Width-2:0]<sum10[SM_Width-2:0])?1:0);
+		//comp1 = sum01[SM_Width-1]^sum11[SM_Width-1]^((sum01[SM_Width-2:0]<sum11[SM_Width-2:0])?1:0);
+	    
+		//select smaller
+		if(sum00[SM_Width-1]^sum10[SM_Width-1]^((sum00[SM_Width-2:0]<sum10[SM_Width-2:0])))
 	    //if(result0[SM_Width-1]==1) // sum00<sum10		
 		//if(sum00<sum10) // sum00<sum10
 			begin
@@ -67,7 +69,7 @@ module acs2(old_sm0, old_sm1, bm00, bm01, bm10, bm11, new_0sm, new_1sm, dec0, de
 			new_0sm=sum10;
 			dec0=1;
 			end
-		if(comp1)	
+		if(sum01[SM_Width-1]^sum11[SM_Width-1]^(sum01[SM_Width-2:0]<sum11[SM_Width-2:0]))	
 	    //if(result1[SM_Width-1]==1) // sum01<sum11
 		//if(sum01<sum11) // sum01<sum11
 			begin

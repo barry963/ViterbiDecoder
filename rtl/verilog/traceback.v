@@ -216,11 +216,13 @@ reg wr_rd_simu;
 reg[`RAM_BYTE_WIDTH-1:0] wr_data_dl;
 
 wire[`RAM_ADR_WIDTH-`U-1:0] wire_rd_adr_col;
-wire[`U-1:0] next_rd_adr_byte;		
+wire[`U-1:0] next_rd_adr_byte;	
+wire[`RAM_ADR_WIDTH-1:0] rd_adr_temp;	
 assign rd_adr_temp={wire_rd_adr_col, next_rd_adr_byte};
 //assign rd_adr=(rd_adr_temp>191)?(rd_adr_temp-64):rd_adr_temp;
 assign rd_adr=rd_adr_temp;
-wire traceback_start;
+wire traceback_start, selectmini_flag;
+assign selectmini_flag=traceback_start||(dummy_cnt==`DUMMY_BLOCK_NUM&&wr_adr[`OUT_NUM_RADIX-1:0]==(`OUT_NUM-2));
 assign traceback_start=(dummy_cnt==`DUMMY_BLOCK_NUM&&wr_adr[`OUT_NUM_RADIX-1:0]==(`OUT_NUM-1));
 assign rd_en=traceback_start? 1: (wr_adr[`OUT_NUM_RADIX-1:0]==(`LEN-1))? 0: During_traback;
 assign next_rd_adr_byte=next_state[`W+`U-1:`W];
@@ -235,7 +237,6 @@ assign {rd_adr_byte, rd_bit}=state;
 //assign next_state={state[`W+`U+`V-1:`V], dec};
 //wire req_min_sm;
 wire [`U-1:0] slice;
-wire[`RAM_ADR_WIDTH-1:0] rd_adr_temp;
 integer min_sm_num, i;
 wire [`SM_Width-1:0]  min_sm_slice;
 wire [5:0]  min_sm_index_slice;
@@ -250,7 +251,7 @@ reg [5:0]  min_sm_index_reg_slice0;
 //assign next_state = (wire_rd_adr_col==rd_adr_col)&&rd_en?  {state[`W+`U+`V-1:`V], dec}:min_sm_index;
 assign next_state=(traceback_start&&rd_en)?min_sm_index:{state[`W+`U+`V-1:`V], dec};
 
-assign min_sm_index= (slice==1)?((min_sm_reg_slice0[7]^min_sm_slice[7]^((min_sm_reg_slice0[6:0]<=min_sm_slice[6:0])?1:0))?min_sm_index_reg_slice0:min_sm_index_slice):0;
+assign min_sm_index= (traceback_start)?((min_sm_reg_slice0[7]^min_sm_slice[7]^((min_sm_reg_slice0[6:0]<=min_sm_slice[6:0])))?min_sm_index_reg_slice0:min_sm_index_slice):0;
 
 //wire [4:0] sm_list_index [15:0]={0,32,1,33,2,33,3,34,4,35,5,36,6,37,7,38,8,39,9,40,10,41,11,42,12,43,13,44,14,45,15,46};
 
@@ -273,13 +274,15 @@ assign min_sm_index= (slice==1)?((min_sm_reg_slice0[7]^min_sm_slice[7]^((min_sm_
 		
 // end	
 
-SelectMiniPM selectminiPM(.array(sm_list),.slice(slice),.indexG(min_sm_index_slice),.valueG(min_sm_slice));
+SelectMiniPM selectminiPM(.array(sm_list),.slice(slice),.en_comp_in(selectmini_flag),.indexG(min_sm_index_slice),.valueG(min_sm_slice));
 always @(posedge clk) 
 begin
-	min_sm_reg_slice0=min_sm_slice;
-	min_sm_index_reg_slice0=min_sm_index_slice;
+	if(selectmini_flag)
+	begin
+		min_sm_index_reg_slice0<=min_sm_index_slice;
+		min_sm_reg_slice0<=min_sm_slice;
+	end
 end
-
 
 always @(rd_bit or rd_dec0 or rd_dec1 or rd_dec2 or rd_dec3 or rd_dec4 or rd_dec5 or rd_dec6 or rd_dec7 or rd_dec8 or rd_dec9 or rd_dec10 or rd_dec11 or rd_dec12 or rd_dec13 or rd_dec14 or rd_dec15 or rd_dec16 or rd_dec17 or rd_dec18 or rd_dec19 or rd_dec20 or rd_dec21 or rd_dec22 or rd_dec23 or rd_dec24 or rd_dec25 or rd_dec26 or rd_dec27 or rd_dec28 or rd_dec29 or rd_dec30 or rd_dec31)
 begin

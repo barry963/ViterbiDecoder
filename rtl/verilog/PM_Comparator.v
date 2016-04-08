@@ -122,6 +122,7 @@
 
 // This is just your compare module.
 module PMComparator (
+	input wire en_comp_in,
     input wire [7:0] X1,
     input wire [5:0] indexX1,
     input wire [7:0] X2,
@@ -130,17 +131,20 @@ module PMComparator (
     output reg [5:0] indexY
     );
 
-    always @* begin
-        if (X1[7]^X2[7]^((X1[6:0]<X2[6:0])?1:0)) begin
-            Y = X1;
-            indexY = indexX1;
-        end
-        else begin
-            Y = X2;
-            indexY = indexX2;
-        end
-		//$display("(#%d %d) (#%d %d)",indexX1,X1,indexX2,X2);
-    end
+    always @(*) begin
+	if(en_comp_in)
+		begin
+			if ((X1[7]^X2[7]^(X1[6:0]<X2[6:0]))) begin
+				Y = X1;
+				indexY = indexX1;
+			end
+			else begin
+				Y = X2;
+				indexY = indexX2;
+			end
+			//$display("(#%d %d) (#%d %d)",indexX1,X1,indexX2,X2);
+		end
+	end
 endmodule
 
 // Compare 8 bytes at a time
@@ -148,7 +152,7 @@ module SelectMiniPM (
     input wire [255:0] array,   // 32*8 byte array
 	input wire [`U-1:0] slice,
 	//input wire [159:0] index,   // 32*5 byte array
-	//input wire en_comp_in,
+	input wire en_comp_in,
     output wire [5:0] indexG,
     output wire [7:0] valueG
     );
@@ -162,7 +166,8 @@ module SelectMiniPM (
 			genvar i;
 			generate
 			for (i=0;i<32;i=i+2) begin :gen_comps_l1
-				PMComparator cl1 (array[i*8+7:i*8],
+				PMComparator cl1 (en_comp_in,
+						 array[i*8+7:i*8],
 						 //index[i*5+4:i*5],
 						 i,
 						 array[(i+1)*8+7:(i+1)*8],
@@ -180,7 +185,8 @@ module SelectMiniPM (
 
 			generate
 			for (i=0;i<16;i=i+2) begin :gen_comps_l2
-				PMComparator cl2 (value_l1[i],
+				PMComparator cl2 (en_comp_in,
+				value_l1[i],
 						 index_l1[i],
 						 value_l1[i+1],
 						 index_l1[i+1],
@@ -195,7 +201,8 @@ module SelectMiniPM (
 
 			generate
 			for (i=0;i<8;i=i+2) begin :gen_comps_l3
-				PMComparator cl3 (value_l2[i],
+				PMComparator cl3 (en_comp_in,
+				value_l2[i],
 						 index_l2[i],
 						 value_l2[i+1],
 						 index_l2[i+1],
@@ -210,7 +217,8 @@ module SelectMiniPM (
 
 			generate
 			for (i=0;i<4;i=i+2) begin :gen_comps_l4
-				PMComparator cl4 (value_l3[i],
+				PMComparator cl4 (en_comp_in,
+				value_l3[i],
 						 index_l3[i],
 						 value_l3[i+1],
 						 index_l3[i+1],
@@ -224,7 +232,8 @@ module SelectMiniPM (
 
 			generate
 			for (i=0;i<2;i=i+2) begin :gen_comps_l5
-				PMComparator cl5 (value_l4[i],
+				PMComparator cl5 (en_comp_in,
+				value_l4[i],
 						 index_l4[i],
 						 value_l4[i+1],
 						 index_l4[i+1],
