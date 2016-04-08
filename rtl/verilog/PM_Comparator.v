@@ -167,10 +167,10 @@ module SelectMiniPM (
 			generate
 			for (i=0;i<32;i=i+2) begin :gen_comps_l1
 				PMComparator cl1 (en_comp_in,
-						 array[i*8+7:i*8],
+						 array[(i<<3)+:8],
 						 //index[i*5+4:i*5],
 						 i,
-						 array[(i+1)*8+7:(i+1)*8],
+						 array[((i+1)<<3)+:8],
 						 //index[(i+1)*5+4:(i+1)*5],
 						 (i+1),
 						 value_l1[i>>1],
