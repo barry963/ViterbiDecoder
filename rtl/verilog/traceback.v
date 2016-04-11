@@ -195,6 +195,7 @@ output[`V-1:0] filo_in;
 
 
 reg[`RAM_BYTE_WIDTH-1:0] wr_data;
+reg[`RAM_BYTE_WIDTH-1:0] wr_data_buf;
 reg[`RAM_ADR_WIDTH-1:0] wr_adr;
 reg en_filo_in;
 reg[`V-1:0] filo_in;			// v cannot be less than 1
@@ -221,14 +222,16 @@ wire[`RAM_ADR_WIDTH-1:0] rd_adr_temp;
 assign rd_adr_temp={wire_rd_adr_col, next_rd_adr_byte};
 //assign rd_adr=(rd_adr_temp>191)?(rd_adr_temp-64):rd_adr_temp;
 assign rd_adr=rd_adr_temp;
-wire traceback_start, selectmini_flag;
-assign selectmini_flag=traceback_start||(dummy_cnt==`DUMMY_BLOCK_NUM&&wr_adr[`OUT_NUM_RADIX-1:0]==(`OUT_NUM-2));
+wire traceback_start, selectmini_flag, selectmini_flag_temp;
+
+assign selectmini_flag_temp=(dummy_cnt==`DUMMY_BLOCK_NUM&&wr_adr[`OUT_NUM_RADIX-1:0]==(`OUT_NUM-2));
+assign selectmini_flag=traceback_start||selectmini_flag_temp;
 assign traceback_start=(dummy_cnt==`DUMMY_BLOCK_NUM&&wr_adr[`OUT_NUM_RADIX-1:0]==(`OUT_NUM-1));
-assign rd_en=traceback_start? 1: (wr_adr[`OUT_NUM_RADIX-1:0]==(`LEN-1))? 0: During_traback;
+assign rd_en=traceback_start? 0: (wr_adr[`OUT_NUM_RADIX-1:0]==(`LEN-1))? 0: During_traback;
 assign next_rd_adr_byte=next_state[`W+`U-1:`W];
 assign wire_rd_adr_col = (valid_in&&traceback_start)? wr_adr[`RAM_ADR_WIDTH-1:`U]: rd_adr_col;
 
-assign {rd_dec0, rd_dec1, rd_dec2, rd_dec3, rd_dec4, rd_dec5, rd_dec6, rd_dec7, rd_dec8, rd_dec9, rd_dec10, rd_dec11, rd_dec12, rd_dec13, rd_dec14, rd_dec15, rd_dec16, rd_dec17, rd_dec18, rd_dec19, rd_dec20, rd_dec21, rd_dec22, rd_dec23, rd_dec24, rd_dec25, rd_dec26, rd_dec27, rd_dec28, rd_dec29, rd_dec30, rd_dec31} = wr_rd_simu?wr_data_dl:rd_en_dl?rd_data:0;       ///////////////////////////////////////////////////
+assign {rd_dec0, rd_dec1, rd_dec2, rd_dec3, rd_dec4, rd_dec5, rd_dec6, rd_dec7, rd_dec8, rd_dec9, rd_dec10, rd_dec11, rd_dec12, rd_dec13, rd_dec14, rd_dec15, rd_dec16, rd_dec17, rd_dec18, rd_dec19, rd_dec20, rd_dec21, rd_dec22, rd_dec23, rd_dec24, rd_dec25, rd_dec26, rd_dec27, rd_dec28, rd_dec29, rd_dec30, rd_dec31} = wr_rd_simu?wr_data_dl:(rd_en_dl?(rd_data):wr_data_buf);       ///////////////////////////////////////////////////
 //assign dec_rd_adr_col=(rd_adr_col==0)?95:(rd_adr_col-1);
 assign dec_rd_adr_col=traceback_start?(wr_adr[`RAM_ADR_WIDTH-1:`U]-1):((rd_adr_col==0)?95:(rd_adr_col-1));
 
@@ -249,7 +252,7 @@ reg [`SM_Width-1:0]  min_sm_reg_slice0;
 reg [5:0]  min_sm_index_reg_slice0;
 
 //assign next_state = (wire_rd_adr_col==rd_adr_col)&&rd_en?  {state[`W+`U+`V-1:`V], dec}:min_sm_index;
-assign next_state=(traceback_start&&rd_en)?min_sm_index:{state[`W+`U+`V-1:`V], dec};
+assign next_state=(traceback_start)?min_sm_index:{state[`W+`U+`V-1:`V], dec};
 
 assign min_sm_index= (traceback_start)?((min_sm_reg_slice0[7]^min_sm_slice[7]^((min_sm_reg_slice0[6:0]<=min_sm_slice[6:0])))?min_sm_index_reg_slice0:min_sm_index_slice):0;
 
@@ -282,6 +285,11 @@ begin
 		min_sm_index_reg_slice0<=min_sm_index_slice;
 		min_sm_reg_slice0<=min_sm_slice;
 	end
+	if(selectmini_flag_temp)
+	begin
+		wr_data_buf<=wr_data;		
+	end
+	
 end
 
 always @(rd_bit or rd_dec0 or rd_dec1 or rd_dec2 or rd_dec3 or rd_dec4 or rd_dec5 or rd_dec6 or rd_dec7 or rd_dec8 or rd_dec9 or rd_dec10 or rd_dec11 or rd_dec12 or rd_dec13 or rd_dec14 or rd_dec15 or rd_dec16 or rd_dec17 or rd_dec18 or rd_dec19 or rd_dec20 or rd_dec21 or rd_dec22 or rd_dec23 or rd_dec24 or rd_dec25 or rd_dec26 or rd_dec27 or rd_dec28 or rd_dec29 or rd_dec30 or rd_dec31)
