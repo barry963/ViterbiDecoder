@@ -367,7 +367,7 @@ begin
 	else
 		begin
 			rd_en_dl<=rd_en;
-			if(wr_en&&rd_en&&wr_adr==rd_adr)
+			if(wr_en&&(rd_en||rd_en_dl)&&wr_adr==rd_adr)
 				begin
 					wr_rd_simu<=1;
 					wr_data_dl<=wr_data;
