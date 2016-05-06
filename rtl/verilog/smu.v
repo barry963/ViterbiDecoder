@@ -37,46 +37,46 @@ output[`SM_Width-1:0] rd_sm0, rd_sm1;
 
 reg[`SM_Width-1:0] regfbank0[`MAX_SLICE-1:0], regfbank1[`MAX_SLICE-1:0];
 reg[`SM_Width-1:0] rd_sm0, rd_sm1;   ///////////////////////////////////////
-reg[`SM_Width-1:0] wr_sm0_shift, wr_sm1_shift;
-wire[`SM_Width-1:0] rd_sm0_shift, rd_sm1_shift;
+//reg[`SM_Width-1:0] wr_sm0_shift, wr_sm1_shift;
+//wire[`SM_Width-1:0] rd_sm0_shift, rd_sm1_shift;
 
 
 integer i;
 
 // for using banks in SMU, we should shift up the read state-metrics order by barriel shift
-always @(shift_cnt or rd_sm0_shift or rd_sm1_shift)
+always @(shift_cnt)
 begin
     case(shift_cnt)
 	0:
 		begin
-			rd_sm0=rd_sm0_shift;
-			rd_sm1=rd_sm1_shift;
+			rd_sm0= regfbank0[adr0_shift];
+			rd_sm1= regfbank1[adr1_shift];
 		end
 	1:
 		begin
-			rd_sm0=rd_sm1_shift;
-			rd_sm1=rd_sm0_shift;
+			rd_sm0= regfbank1[adr1_shift];
+			rd_sm1=regfbank0[adr0_shift];
 		end
 	default:;
     endcase
 end
 // for using banks in SMU, we should shift down the write state-metrics order by barriel shift
-always @(shift_cnt or wr_sm0 or wr_sm1)
-begin
-    case(shift_cnt)
-	0:
-		begin
-			wr_sm0_shift=wr_sm0;
-			wr_sm1_shift=wr_sm1;
-		end
-	1:
-		begin
-			wr_sm0_shift=wr_sm1;
-			wr_sm1_shift=wr_sm0;
-		end
-	default:;
-    endcase
-end
+// always @(shift_cnt or wr_sm0 or wr_sm1)
+// begin
+    // case(shift_cnt)
+	// 0:
+		// begin
+			// wr_sm0_shift=wr_sm0;
+			// wr_sm1_shift=wr_sm1;
+		// end
+	// 1:
+		// begin
+			// wr_sm0_shift=wr_sm1;
+			// wr_sm1_shift=wr_sm0;
+		// end
+	// default:;
+    // endcase
+// end
 
 
 always @(posedge mclk or posedge rst)
@@ -91,11 +91,26 @@ begin
 		end
     else if(valid)
 		begin
-			regfbank0[adr0_shift]<=wr_sm0_shift;		//////////////////
-			regfbank1[adr1_shift]<=wr_sm1_shift;		//////////////////
+		
+			case(shift_cnt)
+			0:
+				begin
+					regfbank0[adr0_shift]<=wr_sm0;
+					regfbank1[adr1_shift]<=wr_sm1;
+				end
+			1:
+				begin
+					regfbank0[adr0_shift]<=wr_sm1;
+					regfbank1[adr1_shift]<=wr_sm0;
+				end
+			default:;
+			endcase
+	
+			//regfbank0[adr0_shift]<=wr_sm0_shift;		
+			//regfbank1[adr1_shift]<=wr_sm1_shift;		
 		end
 end
-assign rd_sm0_shift = regfbank0[adr0_shift];  ////////////////////////////
-assign rd_sm1_shift = regfbank1[adr1_shift];  ////////////////////////////
+//assign rd_sm0_shift = regfbank0[adr0_shift];  
+//assign rd_sm1_shift = regfbank1[adr1_shift];  
 
 endmodule

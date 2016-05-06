@@ -59,8 +59,8 @@ wire enc_valid_out;
 
 wire [`Bit_Width-1:0] dec_symbol0, dec_symbol1;
 reg [7:0] dec_symbol;
-assign  dec_symbol0 [3:0] = dec_symbol[7:4];
-assign  dec_symbol1 [3:0] = dec_symbol[3:0]; 
+assign  dec_symbol1 [3:0] = dec_symbol[7:4];
+assign  dec_symbol0 [3:0] = dec_symbol[3:0]; 
 
 reg dec_valid_in;
 wire [`SYMBOLS_NUM-1:0] pattern;
@@ -105,7 +105,7 @@ begin
 	
 	
     // Open the files
-    inputLLR_file = $fopen("E:\\Dropbox\\ViterbiDecoder\\benchmark\\Matlab_RAW_LLR.bin", "rb");
+    inputLLR_file = $fopen("E:\\Dropbox\\ViterbiDecoder\\benchmark\\Matlab_RAW_LLR_HEbN0.bin", "rb");
     if (inputLLR_file == 0) begin
         $display("Error: Failed to open input file, Matlab_RAW_LLR.bin\nExiting Simulation.");
         $finish;
